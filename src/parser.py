@@ -2,12 +2,12 @@ import json
 from .pattrens import pattrens
 from .flow import Json_flow
 
-__all__ = ("flow_parse", "json_parse")
+__all__ = ("json_parse",)
 
 
 def parse_expression(key, val):
     if key[0] == "!":
-        return ("db_where", f"{key[1:]}{val}")
+        return ("db_where", f"{key[1:]} {val}")
     elif key == "...":
         return ("db_table", f"{val}")
     elif key[0] == "?":
@@ -44,15 +44,13 @@ def json_parse(json_string):
                 elif "db" in p[0]:
                     if "table" in p[0]:
                         flow.table = p[1]
+                        flow.query["item"].append("*")
                         continue
-                    flow._dbs.append(p)
+                    flow.query["where"].append(p[1])
                 elif p[0] == "rename":
                     flow.table = p[1]
-                    flow._dbs.append(("db_item",p[2]))
-                    flow._renames.append({
-                        "from": p[2],
-                        "to": key
-                    })
+                    flow.query["item"].append(p[2])
+                    flow._renames.append((p[2],key))
                 else:
                     flow.body.append(p)
             return flow
@@ -60,8 +58,3 @@ def json_parse(json_string):
             return parse_expression(name, obj)
 
     return parse_obj("root", _j)
-
-
-def flow_parse(flow):
-
-    print(dbs, renames, body)

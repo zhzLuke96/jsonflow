@@ -1,6 +1,13 @@
 # jsonflow
 aim to Understand GraphQL
 
+# todos
+- reduce_flow...
+- py eval
+- other vector
+- auto foreign key
+- plugin function
+
 # example
 ```json
 {
