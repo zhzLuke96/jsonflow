@@ -1,38 +1,101 @@
 # jsonflow
+
 aim to Understand GraphQL
 
 # todos
-- reduce_flow...
-- py eval
-- other vector
-- auto foreign key
-- plugin function
+
+-   reduce_flow...
+-   py eval
+-   other vector
+-   auto foreign key
+-   plugin function
+-   middleware,hook
 
 # example
-```json
-{
-    "{sys_status}":{
-        "cpu":"%cpu_status",
-        "gpu":"%gpu_status",
-        "memory":"calc(%memory_now / %memory_full)",
-    }
-}
-```
+
+### query task
+
+request:
 
 ```json
 {
-    "[user_arr]":{
-        "name":"user.name",
-        "id":"user.id",
-        "amount":"user.amount",
-        "[other]":"user...",
-        "{record}":{
-            "{last}":"top(record)",
-            "[other]":"record..."
+    "[user_arr]": {
+        "!nick_name": "like 'admin_%'",
+        "!sex": "= 'male'",
+        "name": "user.nick_name",
+        "id": "user.u_id",
+        "amount": "user.u_amount",
+        "?rich": "amount > 100",
+        "...": "user",
+        "{orders}": {
+            "...": "orders"
         }
     }
 }
 ```
+
+response:
+
+GET /query http/1.1
+
+```json
+{
+    "user_arr": [{
+            "?rich": "False",
+            "age": 10,
+            "amount": 100,
+            "id": 2,
+            "name": "admin_zhz",
+            "orders": {
+                "content": "222",
+                "id": 2
+            },
+            "orders_id": 2,
+            "sex": "male"
+        },
+        {
+            "?rich": "True",
+            "age": 18,
+            "amount": 1000,
+            "id": 4,
+
+            "name": "admin_yoo",
+            "orders": {
+                "content": "222",
+                "id": 2
+            },
+            "orders_id": "None",
+            "sex": "male"
+        }
+    ]
+}
+```
+
+### watch task
+
+request:
+
+```json
+{
+    "{sys_status}":{
+        "cpu":"%cpu_status",
+        "memory_free":"%memory_status"
+    }
+}
+```
+
+response:
+
+```json
+{
+    "sys_status": {
+        "cpu": 13.4,
+        "memory_free": 68.7
+    }
+}
+```
+
+### other
 
 ```json
 {
@@ -43,33 +106,6 @@ aim to Understand GraphQL
         "!sex":"is not 'male'",
         "!age":">18 and <35",
         "?addr":"in ['shanghai','shengzheng']"
-    }
-}
-```
-
-```json
-{
-    "{article}":{
-        "!id":"2",
-        "...":"article",
-        "tag_count":"count(tags)",
-        "[tags]":{
-            "...":"tags"
-        }
-    }
-}
-{
-    "{article...}":{
-        "!id":"2",
-        "tag_count":"count(tags)",
-        "[tags...]":{}
-    }
-}
-{
-    "{article...}":{
-        "tag_count":"count(tags)",
-        "[tags...]":{},
-        "!java":"in tags"
     }
 }
 ```

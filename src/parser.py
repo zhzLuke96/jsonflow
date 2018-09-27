@@ -19,7 +19,7 @@ def parse_expression(key, val):
         return ("rename", m.group(1), m.group(2))
     elif pattrens["function"].match(val):
         m = pattrens["function"].match(val)
-        return ("func", m.group(1), m.group(2))
+        return ("func", (m.group(1), m.group(2)))
     elif pattrens["db_other"].match(val):
         m = pattrens["db_other"].match(val)
         return ("other", m.group(1))
@@ -50,9 +50,9 @@ def json_parse(json_string):
                 elif p[0] == "rename":
                     flow.table = p[1]
                     flow.query["item"].append(p[2])
-                    flow._renames.append((p[2],key))
+                    flow._renames.append((p[2], key))
                 else:
-                    flow.body.append(p)
+                    flow.body.append((key, p))
             return flow
         else:
             return parse_expression(name, obj)
