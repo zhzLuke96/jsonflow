@@ -4,12 +4,13 @@ aim to Understand GraphQL
 
 # todos
 
--   reduce_flow...
--   py eval
--   other vector
--   auto foreign key
--   plugin function
+-   ~~reduce_flow...~~
+-   ~~py eval~~
+-   ~~auto foreign key~~
+-   ~~plugin function~~
+-   cache
 -   middleware,hook
+-   other vector(遗忘的需求...)
 
 # example
 
@@ -25,6 +26,7 @@ request:
         "name": "user.nick_name",
         "id": "user.u_id",
         "amount": "user.u_amount",
+        "geek_rank": "calc(int(amount) * int(id))",
         "?rich": "amount > 100",
         "...": "user",
         "{orders}": {
@@ -44,6 +46,7 @@ GET /query http/1.1
             "?rich": "False",
             "age": 10,
             "amount": 100,
+            "geek_rank": 200,
             "id": 2,
             "name": "admin_zhz",
             "orders": {
@@ -57,8 +60,8 @@ GET /query http/1.1
             "?rich": "True",
             "age": 18,
             "amount": 1000,
+            "geek_rank": 4000,
             "id": 4,
-
             "name": "admin_yoo",
             "orders": {
                 "content": "222",

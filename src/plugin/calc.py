@@ -1,9 +1,9 @@
 
 
-def main(flow,sign):
+def main(query, expression):
     """
-    input => calc(%a + %b)
-    flow => {a:1,b:2}
-    sign => 1 + 2
+    expression => a + b
+    query => {a:1,b:2}
+    return 3
     """
-    return eval(sign)
+    return eval(expression, query)

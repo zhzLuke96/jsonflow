@@ -1,7 +1,32 @@
+import importlib
 from .parser import json_parse
 from .flow import Json_flow
+from . import watch as inner_watch, plugin as inner_plugin
+
 
 __all__ = ("executor",)
+
+
+def load_plugin(package, name):
+    plug = importlib.import_module(package + f".{name}")
+    return getattr(plug, "main")
+    # return __import__(folder+f".{name}.main")
+
+
+def call_watch(name):
+    try:
+        ret = getattr(inner_watch, name).main()
+    except AttributeError:
+        ret = load_plugin("watch", name)()
+    return ret
+
+
+def call_plugin(name, query, exp):
+    try:
+        ret = getattr(inner_plugin, name).main(query, exp)
+    except AttributeError:
+        ret = load_plugin("plugin", name)(query, exp)
+    return ret
 
 
 def get_new_keys(flow, fact):
@@ -21,10 +46,20 @@ def get_new_keys(flow, fact):
 
 
 def no_sql_action(name, keys, fact, query={}):
+    """
+    # get -> 'cpu' : '%cpu_status' => cpu = 34.3%
+        * watch task
+
+    # func -> 'id' : 'id()' => id = 1
+        * load plugin
+
+    # py -> '?isAdmin' : '"admin_" in name'
+        * eval python
+    """
     if keys[0] == "get":
-        return fact.variable.get(keys[1], lambda x=0: query.get(keys[1], ""))()
+        return call_watch(keys[1])
     elif keys[0] == "func":
-        return None
+        return call_plugin(keys[1][0], query.copy(), keys[1][1])
     elif keys[0] == "py":
         return eval(keys[1], query.copy())
     return ""

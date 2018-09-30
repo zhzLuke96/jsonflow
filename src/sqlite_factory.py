@@ -25,7 +25,6 @@ def sql_table_name(file_name):
 class simple(object):
     def __init__(self, file_name):
         self.db_file = file_name
-        self.variable = dict()
 
     def commit(self, s):
         return sqlite_do(s, self.db_file)
