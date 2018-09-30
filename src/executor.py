@@ -1,8 +1,8 @@
 import importlib
+import copy
 from .parser import json_parse
 from .flow import Json_flow
 from . import watch as inner_watch, plugin as inner_plugin
-
 
 __all__ = ("executor",)
 
@@ -87,15 +87,20 @@ def dump_(flow, fact):
 
     res = []
     for r in q_res:
-        for k, v in flow.body:
-            if isinstance(v, Json_flow):
+        for k, value in flow.body:
+            if isinstance(value, Json_flow):
+                v = copy.deepcopy(value)
                 if v.table:
                     for key, val in fact.foreign_key(flow.table, v.table):
+                        if key not in r:
+                            r[k] = "NOT FOUND"
+                            break
                         if r[key]:
                             v.query["where"].append(f"{val}={r[key]}")
-                r[k] = dump_(v, fact)
+                if k not in r:
+                    r[k] = dump_(v, fact)
             else:
-                r[k] = no_sql_action(k, v, fact, r)
+                r[k] = no_sql_action(k, value, fact, r)
         res.append(r)
     if flow.type != "object":
         return res
