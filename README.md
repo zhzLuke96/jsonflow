@@ -9,6 +9,7 @@ aim to Understand GraphQL
 -   ~~auto foreign key~~
 -   ~~plugin function~~
 -   cache
+-   auto association table
 -   middleware,hook
 -   other vector(遗忘的需求...)
 
@@ -63,10 +64,7 @@ GET /query http/1.1
             "geek_rank": 4000,
             "id": 4,
             "name": "admin_yoo",
-            "orders": {
-                "content": "111",
-                "id": 1
-            },
+            "orders": "NOT FOUND",
             "orders_id": "None",
             "sex": "male"
         }
@@ -112,3 +110,6 @@ response:
     }
 }
 ```
+
+# 后
+算那么点意思吧，但是问题也很多，直接写入sql直接执行py，易用性确实高，带来的注入问题也是很蛋疼的（也许是时候欣赏一波graphql的实现了）

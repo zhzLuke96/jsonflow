@@ -1,4 +1,4 @@
-from src.parser import json_parse
+# from src.parser import json_parse
 from src.executor import executor
 from src.sqlite_factory import simple as factory
 
